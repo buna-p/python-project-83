@@ -1,5 +1,5 @@
 import os
-from flask import Flask
+from flask import Flask, render_template
 from dotenv import load_dotenv
 
 
@@ -7,8 +7,13 @@ load_dotenv()
 
 app = Flask(__name__)
 
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
 
 @app.route('/')
 def index():
-    return 'Hello'
+    return render_template('index.html')
+
+
+@app.route('/', methods=['POST'])
+def analyze():
+    return render_template('index.html')
