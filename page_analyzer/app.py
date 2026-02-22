@@ -1,6 +1,9 @@
 import os
-from flask import Flask, render_template
+from flask import Flask, render_template, request, redirect, url_for, flash
 from dotenv import load_dotenv
+
+from page_analyzer.models import URL
+from page_analyzer.controllers import normalize_url, validate_url
 
 
 load_dotenv()
@@ -14,6 +17,32 @@ def index():
     return render_template('index.html')
 
 
-@app.route('/', methods=['POST'])
-def analyze():
-    return render_template('index.html')
+@app.route('/urls', methods=['POST'])
+def add_url():
+    url = request.form.get('url', '').strip()
+    is_valid, error = validate_url(url)
+    if not is_valid:
+        flash(error, 'error')
+        return render_template('index.html'), 422
+    normalized_url = normalize_url(url)
+    url_id, is_new = URL.save(normalized_url)
+    if is_new:
+        flash('Страница добавлена', 'success')
+    else:
+        flash('Страница уже существует', 'info')
+    return redirect(url_for('show_url', id=url_id))
+
+
+@app.route('/urls/<int:id>', methods=['POST'])
+def show_url(id):
+    find_url = URL.find(id)
+    if not find_url:
+        flash('URL не указан', 'error')
+        return redirect(url_for('index'))
+    return render_template('url.html', url=find_url)
+
+
+@app.route('/urls')
+def get_urls():
+    all_urls = URL.all()
+    return render_template('urls.html', urls=all_urls)
