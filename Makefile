@@ -2,7 +2,7 @@ install:
 	uv sync
 
 lint:
-	uv run ruff check gendiff
+	uv run ruff check .
 
 dev:
 	uv run flask --debug --app page_analyzer:app run
