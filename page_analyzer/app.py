@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 
 from page_analyzer.controllers import normalize_url, validate_url
-from page_analyzer.models import URL
+from page_analyzer.models import URL, URLCheck
 
 load_dotenv()
 
@@ -40,10 +40,22 @@ def show_url(id):
     if not find_url:
         flash('URL не указан', 'danger')
         return redirect(url_for('index'))
-    return render_template('url.html', url=find_url)
+    find_checks = URLCheck.find_checks(id)
+    return render_template('url.html', url=find_url, checks=find_checks)
 
 
 @app.route('/urls')
 def get_urls():
     all_urls = URL.all()
     return render_template('urls.html', urls=all_urls)
+
+
+@app.route('/urls/<int:id>/checks', methods=['POST'])
+def add_check_url(id):
+    url = URL.find(id)
+    if not url:
+        flash('URL не найден', 'danger')
+        return redirect(url_for('index'))
+    URLCheck.save(id)
+    flash('Проверка URL успешно добавлена', 'success')
+    return redirect(url_for('show_url', id=id))
