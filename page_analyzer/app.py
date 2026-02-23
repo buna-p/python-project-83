@@ -1,16 +1,17 @@
 import os
-from flask import Flask, render_template, request, redirect, url_for, flash
+
 from dotenv import load_dotenv
+from flask import Flask, flash, redirect, render_template, request, url_for
 
-from page_analyzer.models import URL
 from page_analyzer.controllers import normalize_url, validate_url
-
+from page_analyzer.models import URL
 
 load_dotenv()
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY')
+
 
 @app.route('/')
 def index():
@@ -22,22 +23,22 @@ def add_url():
     url = request.form.get('url', '').strip()
     is_valid, error = validate_url(url)
     if not is_valid:
-        flash(error, 'error')
+        flash(error, 'danger')
         return render_template('index.html'), 422
     normalized_url = normalize_url(url)
     url_id, is_new = URL.save(normalized_url)
     if is_new:
-        flash('Страница добавлена', 'success')
+        flash('Страница успешно добавлена', 'success')
     else:
         flash('Страница уже существует', 'info')
     return redirect(url_for('show_url', id=url_id))
 
 
-@app.route('/urls/<int:id>', methods=['POST'])
+@app.route('/urls/<int:id>')
 def show_url(id):
     find_url = URL.find(id)
     if not find_url:
-        flash('URL не указан', 'error')
+        flash('URL не указан', 'danger')
         return redirect(url_for('index'))
     return render_template('url.html', url=find_url)
 
