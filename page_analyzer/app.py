@@ -59,3 +59,10 @@ def add_check_url(id):
     URLCheck.save(id)
     flash('Проверка URL успешно добавлена', 'success')
     return redirect(url_for('show_url', id=id))
+
+
+@app.template_filter('datetime')
+def format_datetime(datetime, format='%Y-%m-%d %H:%M:%S'):
+    if datetime:
+        return datetime.strftime(format)
+    return ''
