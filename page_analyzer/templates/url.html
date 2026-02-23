@@ -58,8 +58,8 @@
           </table>
         </div>
         <h2 class="mt-5 mb-3">Проверки</h2>
-        <form method="post" action="/urls/1/checks">
-          <input type="submit" class="btn btn-success" value="Запустить проверку">
+        <form action="{{ url_for('add_check_url', id=url.id) }}" method="post" class="mb-3">
+          <button type="submit" class="btn btn-success text-uppercase">Запустить проверку</button>
         </form>
         <div>
           <table class="table table-bordered table-hover mt-2" data-test="checks">
@@ -73,7 +73,18 @@
                 <th>Дата создания</th>
               </tr>
             </thead>
-            <tbody></tbody>
+            <tbody>
+              {% for check in checks %}
+              <tr>
+                <td>{{ check.id }}</td>
+                <td>{{ check.status_code or '' }}</td>
+                <td>{{ check.h1 or '' }}</td>
+                <td>{{ check.title or '' }}</td>
+                <td>{{ check.description or '' }}</td>
+                <td>{{ check.created_at }}</td>
+              </tr>
+              {% endfor %}
+            </tbody>
           </table>
         </div>
       </div>
