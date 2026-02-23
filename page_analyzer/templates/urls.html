@@ -56,7 +56,7 @@
                   <td><a href="{{ url_for('show_url', id=url.id) }}">{{ url.name }}</a></td>
                   <td>
                     {% if url.last_check %}
-                      {{ url.last_check.created_at }}
+                      {{ url.last_check.created_at | datetime }}
                     {% endif %}
                   </td>
                   <td></td>
