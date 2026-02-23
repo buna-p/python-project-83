@@ -91,14 +91,15 @@ class URLCheck:
         self.created_at = created_at
 
     @staticmethod
-    def save(url_id):
+    def save_check(url_id):
         insert_query = """INSERT INTO url_checks (url_id) VALUES (%s) 
-        RETURNING id, created_at"""
+        RETURNING id"""
         with get_conn() as conn:
             with conn.cursor() as cur:
                 cur.execute(insert_query, (url_id,))
-                check_id, created_at = cur.fetchone()
-                return check_id, created_at
+                check_id = cur.fetchone()[0]
+                conn.commit()
+                return check_id
 
     @staticmethod
     def find_checks(url_id, order_by='created_at DESC'):
@@ -139,3 +140,25 @@ class URLCheck:
                         created_at=data['created_at']
                     )
                 return None
+
+    @staticmethod
+    def upd_check(id, status_code, h1, title, description):
+        upd_query = """UPDATE url_checks 
+        SET status_code=%s, h1=%s, title=%s, description=%s WHERE id=%s"""
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(
+                    upd_query,
+                    (status_code, h1, title, description, id)
+                    )
+                conn.commit()
+                return cur.rowcount > 0
+
+    @staticmethod
+    def del_check(id):
+        del_query = "DELETE FROM url_checks WHERE id = %s"
+        with get_conn() as conn:
+            with conn.cursor() as cur:
+                cur.execute(del_query, (id,))
+                conn.commit()
+                return cur.rowcount > 0

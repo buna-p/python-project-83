@@ -3,6 +3,7 @@ import os
 from dotenv import load_dotenv
 from flask import Flask, flash, redirect, render_template, request, url_for
 
+from page_analyzer.analysis import analyze_page
 from page_analyzer.controllers import normalize_url, validate_url
 from page_analyzer.models import URL, URLCheck
 
@@ -56,8 +57,15 @@ def add_check_url(id):
     if not url:
         flash('URL не найден', 'danger')
         return redirect(url_for('index'))
-    URLCheck.save(id)
-    flash('Проверка URL успешно добавлена', 'success')
+    check_id = URLCheck.save_check(id)
+    result = analyze_page(url.name)
+    if result:
+        status_code, h1, title, description = result
+        URLCheck.upd_check(check_id, status_code, h1, title, description)
+        flash('Проверка URL успешно добавлена', 'success')
+    else:
+        URLCheck.del_check(check_id)
+        flash('Произошла ошибка при проверке', 'danger')
     return redirect(url_for('show_url', id=id))
 
 
