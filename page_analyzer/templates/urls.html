@@ -59,7 +59,11 @@
                       {{ url.last_check.created_at | datetime }}
                     {% endif %}
                   </td>
-                  <td></td>
+                  <td>
+                    {% if url.last_check %}
+                      {{ url.last_check.status_code }}
+                    {% endif %}
+                  </td>
                 </tr>
               {% endfor %}
             </tbody>
