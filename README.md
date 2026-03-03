@@ -7,9 +7,7 @@
 [![Actions Status](https://github.com/buna-p/python-project-83/actions/workflows/hexlet-check.yml/badge.svg)](https://github.com/buna-p/python-project-83/actions)
 
 
-## Демонстрационный сайт
-https://python-project-83-97v9.onrender.com
-
+**Демонстрационный сайт** https://python-project-83-97v9.onrender.com
 
 **Возможности:**
 
