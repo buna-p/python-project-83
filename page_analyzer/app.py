@@ -62,7 +62,7 @@ def add_check_url(id):
     if result:
         status_code, h1, title, description = result
         URLCheck.upd_check(check_id, status_code, h1, title, description)
-        flash('Проверка URL успешно добавлена', 'success')
+        flash('Страница успешно проверена', 'success')
     else:
         URLCheck.del_check(check_id)
         flash('Произошла ошибка при проверке', 'danger')
