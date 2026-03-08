@@ -12,22 +12,29 @@ def analyze_page(url):
         title = extract_title(data)
         description = extract_description(data)
         return status_code, h1, title, description
-    except Exception:
+    except requests.exceptions.Timeout:
+        print("Ошибка: время ожидания ответа истекло")
+        return None
+    except requests.exceptions.HTTPError as e:
+        print(f"Ошибка HTTP: {e}")
+        return None
+    except Exception as e:
+        print(f"Неизвестная ошибка: {e}")
         return None
 
 
 def extract_h1(data):
     h1 = data.find('h1')
-    result = h1.get_text(strip=True)
-    if result:
+    if h1:
+        result = h1.get_text(strip=True)
         return result
     return None
 
 
 def extract_title(data):
     title = data.find('title')
-    result = title.get_text(strip=True)
-    if result:
+    if title:
+        result = title.get_text(strip=True)
         return result
     return None
 
