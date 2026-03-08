@@ -41,8 +41,9 @@ def extract_title(data):
 
 def extract_description(data):
     description = data.find('meta', attrs={'name': 'description'})
-    if description and description.get('content'):
-        result = description['content'].strip()
-    if result:
-        return result
+    if description:
+        if description.get('content'):
+            result = description['content'].strip()
+            if result:
+                return result
     return None
